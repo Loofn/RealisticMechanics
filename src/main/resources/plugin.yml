@@ -1,0 +1,6 @@
+name: RealisticMechanics
+version: '${version}'
+
+main: me.lofn.realisticMechanics.RealisticMechanics
+api-version: '26.1.2'
+load: POSTWORLD
