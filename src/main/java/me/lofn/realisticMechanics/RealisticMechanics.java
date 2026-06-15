@@ -1,5 +1,6 @@
 package me.lofn.realisticMechanics;
 
+import me.lofn.realisticMechanics.core.mobs.AggressiveWolves;
 import me.lofn.realisticMechanics.core.physics.Encumbrance;
 import me.lofn.realisticMechanics.core.physics.FallingTrees;
 import me.lofn.realisticMechanics.core.physics.TreePhysics;
@@ -13,6 +14,7 @@ public final class RealisticMechanics extends JavaPlugin {
 
         TreePhysics.init(this);
         Encumbrance.start(this);
+        AggressiveWolves.start(this);
 
         getServer().getPluginManager().registerEvents(
                 new FallingTrees(),
