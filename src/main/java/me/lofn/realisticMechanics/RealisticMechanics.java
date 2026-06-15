@@ -1,5 +1,6 @@
 package me.lofn.realisticMechanics;
 
+import me.lofn.realisticMechanics.core.physics.Encumbrance;
 import me.lofn.realisticMechanics.core.physics.FallingTrees;
 import me.lofn.realisticMechanics.core.physics.TreePhysics;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,6 +12,7 @@ public final class RealisticMechanics extends JavaPlugin {
         // Plugin startup logic
 
         TreePhysics.init(this);
+        Encumbrance.start(this);
 
         getServer().getPluginManager().registerEvents(
                 new FallingTrees(),
