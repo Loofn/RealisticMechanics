@@ -55,12 +55,14 @@ public class Encumbrance {
         if (!shouldAffect(player)) return;
 
         double weight = calculateWeight(player);
+        double capacity = getCarryCapacity(player);
+        double overload = weight - capacity;
 
-        if (weight < BREATHING_THRESHOLD) return;
+        if (overload < BREATHING_THRESHOLD) return;
 
         spawnHeavyBreathingParticles(player, weight);
 
-        if (player.isInWater() && weight >= WATER_SINK_THRESHOLD) {
+        if (player.isInWater() && overload >= WATER_SINK_THRESHOLD) {
             double pull = calculateDownwardPull(weight);
 
             Vector velocity = player.getVelocity();
@@ -68,9 +70,29 @@ public class Encumbrance {
             player.setVelocity(velocity);
         }
 
-        if (weight >= EXHAUSTION_THRESHOLD) {
+        if (overload >= EXHAUSTION_THRESHOLD) {
             applyExtraExhaustion(player, weight);
         }
+    }
+
+    private static double getCarryCapacity(Player player) {
+        double capacity = BREATHING_THRESHOLD;
+
+        if(isWearing(player, Material.GOLDEN_CHESTPLATE)) {
+            capacity += 50;
+        }
+
+        return capacity;
+    }
+
+    private static boolean isWearing(Player player, Material material) {
+        for (ItemStack armor : player.getInventory().getArmorContents()) {
+            if (armor != null && armor.getType() == material) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static boolean shouldAffect(Player player) {
