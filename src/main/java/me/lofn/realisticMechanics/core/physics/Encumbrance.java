@@ -1,24 +1,18 @@
 package me.lofn.realisticMechanics.core.physics;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.util.Set;
 
-import static org.apache.commons.lang3.function.Failable.apply;
-
 public class Encumbrance {
 
-    private static final double SINK_THRESHOLD = 35.0;
+    private static final double BREATHING_THRESHOLD = 50.0;
+    private static final double WATER_SINK_THRESHOLD = 80.0;
+    private static final double EXHAUSTION_THRESHOLD = 120.0;
     private static final double MAX_DOWNWARD_SPEED = -0.45;
 
     private static final Set<Material> HEAVY_BLOCKS = Set.of(
@@ -61,23 +55,46 @@ public class Encumbrance {
         if (!shouldAffect(player)) return;
 
         double weight = calculateWeight(player);
-        if (weight < SINK_THRESHOLD) return;
 
-        double pull = calculateDownwardPull(weight);
+        if (weight < BREATHING_THRESHOLD) return;
 
-        Vector velocity = player.getVelocity();
-        velocity.setY(Math.max(MAX_DOWNWARD_SPEED, velocity.getY() - pull));
+        spawnHeavyBreathingParticles(player, weight);
 
-        player.setVelocity(velocity);
+        if (player.isInWater() && weight >= WATER_SINK_THRESHOLD) {
+            double pull = calculateDownwardPull(weight);
+
+            Vector velocity = player.getVelocity();
+            velocity.setY(Math.max(MAX_DOWNWARD_SPEED, velocity.getY() - pull));
+            player.setVelocity(velocity);
+        }
+
+        if (weight >= EXHAUSTION_THRESHOLD) {
+            applyExtraExhaustion(player, weight);
+        }
     }
 
     private static boolean shouldAffect(Player player) {
-        if (!player.isInWater()) return false;
         if (player.isInsideVehicle()) return false;
         if (player.isFlying()) return false;
 
         GameMode mode = player.getGameMode();
         return mode == GameMode.SURVIVAL || mode == GameMode.ADVENTURE;
+    }
+
+    private static void applyExtraExhaustion(Player player, double weight) {
+        Vector velocity = player.getVelocity();
+
+        boolean isMoving = Math.abs(velocity.getX()) > 0.05
+                || Math.abs(velocity.getZ()) > 0.05;
+
+        if (!isMoving) return;
+
+        double extraExhaustion = Math.min(0.02f, weight / 5000.0);
+
+        player.setExhaustion((float) Math.min(
+                4.0f,
+                player.getExhaustion() + extraExhaustion
+        ));
     }
 
     private static double calculateDownwardPull(double weight) {
@@ -125,5 +142,37 @@ public class Encumbrance {
         };
 
         return singleWeight * amount;
+    }
+
+    private static void spawnHeavyBreathingParticles(Player player, double weight) {
+        double chance;
+
+        if (weight < 80) {
+            chance = 0.08;
+        } else if (weight < 120) {
+            chance = 0.18;
+        } else if (weight < 180) {
+            chance = 0.30;
+        } else {
+            chance = 0.45;
+        }
+
+        if (Math.random() > chance) return;
+
+        Vector direction = player.getLocation().getDirection().normalize();
+
+        Location mouth = player.getEyeLocation()
+                .add(direction.multiply(0.35))
+                .add(0, -0.15, 0);
+
+        player.getWorld().spawnParticle(
+                Particle.CLOUD,
+                mouth,
+                1,
+                0.02,
+                0.02,
+                0.02,
+                0.002
+        );
     }
 }
