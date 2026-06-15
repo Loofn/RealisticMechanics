@@ -36,7 +36,7 @@ public class CalendarCommand implements CommandExecutor {
 
         String dayName = MEDIEVAL_DAYS[(int) ((worldDay - 1) % MEDIEVAL_DAYS.length)];
 
-        player.sendMessage("§eIt is " + dayName + " and the year is " + year + " The moon's shape is " + TimeUtils.getMoonPhaseName(player.getWorld()) + ".");
+        player.sendMessage("§eIt is " + dayName + ". The moon's shape is " + TimeUtils.getMoonPhaseName(player.getWorld()) + ".");
 
         if(TimeUtils.isFullMoon(player.getWorld())) {
             player.sendMessage("§cFull moon is empowering the creatures of the night!");
