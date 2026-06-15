@@ -1,5 +1,8 @@
 package me.lofn.realisticMechanics;
 
+import me.lofn.realisticMechanics.core.calendar.CalendarCommand;
+import me.lofn.realisticMechanics.core.calendar.FullMoonEffects;
+import me.lofn.realisticMechanics.core.calendar.FullMoonListener;
 import me.lofn.realisticMechanics.core.mobs.AggressiveWolves;
 import me.lofn.realisticMechanics.core.physics.Encumbrance;
 import me.lofn.realisticMechanics.core.physics.FallingTrees;
@@ -15,11 +18,13 @@ public final class RealisticMechanics extends JavaPlugin {
         TreePhysics.init(this);
         Encumbrance.start(this);
         AggressiveWolves.start(this);
+        FullMoonEffects.start(this);
 
-        getServer().getPluginManager().registerEvents(
-                new FallingTrees(),
-                this
-        );
+        getServer().getPluginManager().registerEvents(new FallingTrees(), this);
+        getServer().getPluginManager().registerEvents(new FullMoonListener(this), this);
+        getServer().getPluginManager().registerEvents(new FullMoonEffects(), this);
+
+        getCommand("calendar").setExecutor(new CalendarCommand());
 
         getLogger().info("RealisticMechanics enabled!");
     }
