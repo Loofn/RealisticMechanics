@@ -28,7 +28,7 @@ public class FragileIce {
         if (player.getGameMode() != GameMode.SURVIVAL && player.getGameMode() != GameMode.ADVENTURE) return;
         if (player.isFlying() || player.isInsideVehicle()) return;
 
-        Block blockBelow = player.getLocation().subtract(0, 0.1, 0).getBlock();
+        Block blockBelow = player.getLocation().subtract(0, 1, 0).getBlock();
 
         if (!isFragileIce(blockBelow)) {
             warnedPlayers.remove(player.getUniqueId());
