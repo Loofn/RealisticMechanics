@@ -13,7 +13,7 @@ public class Encumbrance {
     private static final double BREATHING_THRESHOLD = 50.0;
     private static final double WATER_SINK_THRESHOLD = 80.0;
     private static final double EXHAUSTION_THRESHOLD = 120.0;
-    private static final double MAX_DOWNWARD_SPEED = -0.45;
+    private static final double MAX_DOWNWARD_SPEED = -1.1;
 
     private static final Set<Material> HEAVY_BLOCKS = Set.of(
             Material.STONE,
@@ -66,7 +66,11 @@ public class Encumbrance {
             double pull = calculateDownwardPull(weight);
 
             Vector velocity = player.getVelocity();
+
             velocity.setY(Math.max(MAX_DOWNWARD_SPEED, velocity.getY() - pull));
+            velocity.setX(velocity.getX() * 0.85);
+            velocity.setZ(velocity.getZ() * 0.85);
+
             player.setVelocity(velocity);
         }
 
@@ -120,7 +124,11 @@ public class Encumbrance {
     }
 
     private static double calculateDownwardPull(double weight) {
-        return Math.min(0.035, weight / 2500.0);
+        if (weight < 80) return 0;
+
+        double overload = weight - 80;
+
+        return Math.min(0.12, 0.04 + (overload / 1000.0));
     }
 
     private static double calculateWeight(Player player) {
