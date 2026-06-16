@@ -16,60 +16,48 @@ public class TreePhysics {
         plugin = pl;
     }
 
-    public static void fall(Set<Block> logs, Vector hitDir) {
+    public static void fallStraightDown(Set<Block> logs) {
         if (logs.isEmpty()) return;
 
-        Vector fallDirection = calculateFallDirection(logs, hitDir);
         World world = logs.iterator().next().getWorld();
 
-        for (Block block : logs) {
+        for (Block log : logs) {
+            breakLeavesAround(log);
+
             world.spawnParticle(
-                    Particle.CLOUD,
-                    block.getLocation().add(0.5, 0.5, 0.5),
-                    2
+                    Particle.BLOCK,
+                    log.getLocation().add(0.5, 0.5, 0.5),
+                    8,
+                    log.getBlockData()
             );
 
-            world.playSound(
-                    block.getLocation(),
-                    Sound.BLOCK_WOOD_BREAK,
-                    1f,
-                    0.6f
+            FallingBlock falling = world.spawn(
+                    log.getLocation().add(0.5, 0.0, 0.5),
+                    FallingBlock.class,
+                    entity -> {
+                        entity.setBlockData(log.getBlockData());
+                        entity.setDropItem(true);
+                        entity.setHurtEntities(true);
+                    }
             );
+
+            falling.setVelocity(new Vector(0, -0.25, 0));
+
+            log.setType(Material.AIR);
         }
-
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            for (Block block : logs) {
-                spawnFallingLog(block, fallDirection);
-                block.setType(Material.AIR);
-            }
-        }, 10L);
     }
 
-    private static Vector calculateFallDirection(Set<Block> logs, Vector hitDir) {
-        Vector direction = hitDir.clone();
+    private static void breakLeavesAround(Block log) {
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
+                    Block nearby = log.getRelative(x, y, z);
 
-        direction.setY(-0.3);
-
-        direction.add(new Vector(
-                (Math.random() - 0.5) * 0.2,
-                0,
-                (Math.random() - 0.5) * 0.2
-        ));
-
-        return direction.normalize();
-    }
-
-    private static void spawnFallingLog(Block block, Vector direction) {
-        FallingBlock fallingBlock = block.getWorld().spawn(
-                block.getLocation().add(0.5, 0.5, 0.5),
-                FallingBlock.class,
-                entity -> {
-                    entity.setBlockData(block.getBlockData());
-                    entity.setDropItem(true);
-                    entity.setHurtEntities(true);
+                    if (Tag.LEAVES.isTagged(nearby.getType())) {
+                        nearby.breakNaturally();
+                    }
                 }
-        );
-
-        fallingBlock.setVelocity(direction.clone().multiply(0.6).setY(0.4));
+            }
+        }
     }
 }
