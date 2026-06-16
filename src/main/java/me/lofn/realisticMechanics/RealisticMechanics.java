@@ -4,6 +4,7 @@ import me.lofn.realisticMechanics.core.calendar.CalendarCommand;
 import me.lofn.realisticMechanics.core.calendar.FullMoonEffects;
 import me.lofn.realisticMechanics.core.calendar.FullMoonListener;
 import me.lofn.realisticMechanics.core.mobs.AggressiveWolves;
+import me.lofn.realisticMechanics.core.overrides.CampfireBreaking;
 import me.lofn.realisticMechanics.core.physics.*;
 import me.lofn.realisticMechanics.core.restrictions.ElytraRestrictions;
 import me.lofn.realisticMechanics.core.restrictions.EssentialsRestrictions;
@@ -31,6 +32,7 @@ public final class RealisticMechanics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FullMoonEffects(), this);
         getServer().getPluginManager().registerEvents(new CampfireMechanics(), this);
         getServer().getPluginManager().registerEvents(new PlayerLeashing(), this);
+        getServer().getPluginManager().registerEvents(new CampfireBreaking(), this);
         PlayerLeashing.start(this);
 
         getServer().getPluginManager().registerEvents(new PlayerLeashing(), this);
