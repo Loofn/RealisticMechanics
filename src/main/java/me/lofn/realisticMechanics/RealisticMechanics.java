@@ -10,6 +10,7 @@ import me.lofn.realisticMechanics.core.restrictions.EssentialsRestrictions;
 import me.lofn.realisticMechanics.core.restrictions.LeashRestrictions;
 import me.lofn.realisticMechanics.core.restrictions.TeleportRestrictions;
 import me.lofn.realisticMechanics.core.survival.CampfireMechanics;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RealisticMechanics extends JavaPlugin {
@@ -39,7 +40,13 @@ public final class RealisticMechanics extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TeleportRestrictions(), this);
         getServer().getPluginManager().registerEvents(new ElytraRestrictions(), this);
 
-        getCommand("calendar").setExecutor(new CalendarCommand());
+        PluginCommand calendarCommand = getCommand("calendar");
+
+        if (calendarCommand != null) {
+            calendarCommand.setExecutor(new CalendarCommand());
+        } else {
+            getLogger().warning("Command /calendar is missing from plugin.yml!");
+        }
 
         boolean hasEssentials = getServer().getPluginManager().isPluginEnabled("Essentials");
 
