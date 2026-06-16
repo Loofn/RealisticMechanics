@@ -102,7 +102,7 @@ public class FragileIce {
 
                 if (!isFragileIce(block)) continue;
 
-                block.setType(Material.AIR);
+                block.setType(Material.WATER);
 
                 world.spawnParticle(
                         Particle.BLOCK,
