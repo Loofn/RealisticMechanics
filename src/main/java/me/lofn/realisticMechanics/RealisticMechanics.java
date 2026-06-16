@@ -3,6 +3,7 @@ package me.lofn.realisticMechanics;
 import me.lofn.realisticMechanics.core.calendar.CalendarCommand;
 import me.lofn.realisticMechanics.core.calendar.FullMoonEffects;
 import me.lofn.realisticMechanics.core.calendar.FullMoonListener;
+import me.lofn.realisticMechanics.core.calendar.TimeCycle;
 import me.lofn.realisticMechanics.core.mobs.AggressiveWolves;
 import me.lofn.realisticMechanics.core.overrides.CampfireBreaking;
 import me.lofn.realisticMechanics.core.physics.*;
@@ -20,6 +21,7 @@ public final class RealisticMechanics extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
 
+        TimeCycle.start(this);
         TreePhysics.init(this);
         Encumbrance.start(this);
         AggressiveWolves.start(this);
