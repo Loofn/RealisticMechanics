@@ -1,5 +1,6 @@
 package me.lofn.realisticMechanics.core.mobs;
 
+import me.lofn.realisticMechanics.core.physics.PlayerLeashing;
 import me.lofn.realisticMechanics.utils.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -64,6 +65,8 @@ public class AggressiveWolves {
     }
 
     private static boolean canTarget(Player player) {
+        if (PlayerLeashing.isLeashed(player)) return false;
+
         GameMode mode = player.getGameMode();
         return mode == GameMode.SURVIVAL || mode == GameMode.ADVENTURE;
     }
