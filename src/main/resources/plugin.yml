@@ -6,6 +6,8 @@ main: me.lofn.realisticMechanics.RealisticMechanics
 api-version: '26.1.2'
 load: POSTWORLD
 
+softdepend: [EssentialsX]
+
 commands:
   calendar:
     description: Shows the world calendar and moon phase
