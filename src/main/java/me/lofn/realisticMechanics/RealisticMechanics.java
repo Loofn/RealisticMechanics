@@ -6,7 +6,9 @@ import me.lofn.realisticMechanics.core.calendar.FullMoonListener;
 import me.lofn.realisticMechanics.core.mobs.AggressiveWolves;
 import me.lofn.realisticMechanics.core.physics.Encumbrance;
 import me.lofn.realisticMechanics.core.physics.FallingTrees;
+import me.lofn.realisticMechanics.core.physics.FragileIce;
 import me.lofn.realisticMechanics.core.physics.TreePhysics;
+import me.lofn.realisticMechanics.core.survival.CampfireMechanics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RealisticMechanics extends JavaPlugin {
@@ -19,10 +21,12 @@ public final class RealisticMechanics extends JavaPlugin {
         Encumbrance.start(this);
         AggressiveWolves.start(this);
         FullMoonEffects.start(this);
+        FragileIce.start(this);
 
         getServer().getPluginManager().registerEvents(new FallingTrees(), this);
         getServer().getPluginManager().registerEvents(new FullMoonListener(this), this);
         getServer().getPluginManager().registerEvents(new FullMoonEffects(), this);
+        getServer().getPluginManager().registerEvents(new CampfireMechanics(), this);
 
         getCommand("calendar").setExecutor(new CalendarCommand());
 
