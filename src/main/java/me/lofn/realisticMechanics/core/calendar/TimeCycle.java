@@ -25,6 +25,10 @@ public class TimeCycle {
     public static void start(JavaPlugin plugin) {
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (World world : Bukkit.getWorlds()) {
+                if (world.getEnvironment() != World.Environment.NORMAL) {
+                    continue;
+                }
+
                 world.setGameRule(GameRules.ADVANCE_TIME, false);
 
                 long fullTime = world.getFullTime();
@@ -38,7 +42,12 @@ public class TimeCycle {
                 long advance = (long) buffer;
 
                 if (advance > 0) {
-                    world.setFullTime(fullTime + advance);
+                    try {
+                        world.setFullTime(fullTime + advance);
+                    } catch (IllegalArgumentException ignored) {
+                        continue;
+                    }
+
                     buffer -= advance;
                 }
 
