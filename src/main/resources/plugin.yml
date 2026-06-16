@@ -6,7 +6,7 @@ main: me.lofn.realisticMechanics.RealisticMechanics
 api-version: '26.1.2'
 load: POSTWORLD
 
-softdepend: [EssentialsX]
+softdepend: [Essentials]
 
 commands:
   calendar:
